@@ -261,46 +261,46 @@ class WeisseModel extends Model {
   // -- Variable constraints --
 
   /* ATP and internal nutrient */
-  a must (_ >= 0.0)
-  si must (_ >= 0.0)
+  a nonnegative()
+  si nonnegative()
 
   /* proteins */
-  r must (_ >= 0.0)
-  et must (_ >= 0.0)
-  em must (_ >= 0.0)
-  p must (_ >= 0.0)
-  q must (_ >= 0.0)
+  r nonnegative()
+  et nonnegative()
+  em nonnegative()
+  p nonnegative()
+  q nonnegative()
 
   /* mRNA */
-  mr must (_ >= 0.0)
-  mt must (_ >= 0.0)
-  mm must (_ >= 0.0)
-  mp must (_ >= 0.0)
-  mq must (_ >= 0.0)
+  mr nonnegative()
+  mt nonnegative()
+  mm nonnegative()
+  mp nonnegative()
+  mq nonnegative()
 
   /* ribosome-bound mRNA */
-  rmr must (_ >= 0.0)
-  rmt must (_ >= 0.0)
-  rmm must (_ >= 0.0)
-  rmp must (_ >= 0.0)
-  rmq must (_ >= 0.0)
+  rmr nonnegative()
+  rmt nonnegative()
+  rmm nonnegative()
+  rmp nonnegative()
+  rmq nonnegative()
 
   /* ribosome-bound mRNA sequestered by chloramphenicol */
-  zmr must (_ >= 0.0)
-  zmt must (_ >= 0.0)
-  zmm must (_ >= 0.0)
-  zmp must (_ >= 0.0)
-  zmq must (_ >= 0.0)
+  zmr nonnegative()
+  zmt nonnegative()
+  zmm nonnegative()
+  zmp nonnegative()
+  zmq nonnegative()
 
   /* some rates */
-  Kgamma must (_ >= 0.0)
-  gamma must (_ >= 0.0)
-  ttrate must (_ >= 0.0)
-  lam must (_ >= 0.0)
-  fr must (_ >= 0.0)
-  nucat must (_ >= 0.0)
-  f must (_ >= 0.0)
-  b must (_ >= 0.0)
+  Kgamma nonnegative()
+  gamma nonnegative()
+  ttrate nonnegative()
+  lam nonnegative()
+  fr nonnegative()
+  nucat nonnegative()
+  f nonnegative()
+  b nonnegative()
 
   // -- Initial values --
 

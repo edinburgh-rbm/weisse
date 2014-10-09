@@ -18,7 +18,10 @@
 package uk.ac.ed.inf.mois.weisse
 
 import uk.ac.ed.inf.mois.{Model, Process}
-import uk.ac.ed.inf.mois.{DeterministicReactionNetwork, VarCalc, Math}
+import uk.ac.ed.inf.mois.{VarCalc, Math}
+import uk.ac.ed.inf.mois.reaction.DeterministicReactionNetwork
+import spire.implicits._
+import uk.ac.ed.inf.mois.implicits._
 
 import org.apache.commons.math3.ode.nonstiff.AdamsMoultonIntegrator
 
@@ -47,7 +50,7 @@ class WeisseCell(
   val cl    : Double,
   val kb    : Double,
   val ku    : Double)
-    extends DeterministicReactionNetwork("AndreasCell")
+    extends DeterministicReactionNetwork
        with VarCalc
        with Math {
 
@@ -118,82 +121,82 @@ class WeisseCell(
 
   reactions(
     /* nutrient import */
-    () -> si `at!` et*vt*s0/(Kt + s0),
+    () --> si `at!` et*vt*s0/(Kt + s0),
 
     /* nutrient metabolism */
-    si -> () `at!` nucat,
-    () -> a `at!` ns*nucat,
-    a -> () `at!` ttrate,
+    si --> () `at!` nucat,
+    () --> a `at!` ns*nucat,
+    a --> () `at!` ttrate,
 
     /* transcription */
-    () -> mr `at!` wr*a/(thetar + a),
-    () -> mt `at!` we*a/(thetax + a),
-    () -> mm `at!` we*a/(thetax + a),
-    () -> mp `at!` wp*a/(thetax + a),
-    () -> mq `at!` wq*a/(thetax + a)/(1 + pow((q/Kq), nq)),
+    () --> mr `at!` wr*a/(thetar + a),
+    () --> mt `at!` we*a/(thetax + a),
+    () --> mm `at!` we*a/(thetax + a),
+    () --> mp `at!` wp*a/(thetax + a),
+    () --> mq `at!` wq*a/(thetax + a)/(1 + pow((q/Kq), nq)),
 
     /* translation */
-    r + mr -> rmr at kb,
-    r + mt -> rmt at kb,
-    r + mm -> rmm at kb,
-    r + mp -> rmp at kb,
-    r + mq -> rmq at kb,
+    r + mr --> rmr at kb,
+    r + mt --> rmt at kb,
+    r + mm --> rmm at kb,
+    r + mp --> rmp at kb,
+    r + mq --> rmq at kb,
 
-    rmr -> r + mr at ku,
-    rmt -> r + mt at ku,
-    rmm -> r + mm at ku,
-    rmp -> r + mp at ku,
-    rmq -> r + mq at ku,
+    rmr --> r + mr at ku,
+    rmt --> r + mt at ku,
+    rmm --> r + mm at ku,
+    rmp --> r + mp at ku,
+    rmq --> r + mq at ku,
 
-    rmr -> r + r + mr `at!` gamma/nr,
-    rmt -> r + et + mt `at!` gamma/nx,
-    rmm -> r + em + mm `at!` gamma/nx,
-    rmp -> r + p + mp `at!` gamma/nx,
-    rmq -> r + q + mq `at!` gamma/nx,
+    rmr --> r + r + mr `at!` gamma/nr,
+    rmt --> r + et + mt `at!` gamma/nx,
+    rmm --> r + em + mm `at!` gamma/nx,
+    rmp --> r + p + mp `at!` gamma/nx,
+    rmq --> r + q + mq `at!` gamma/nx,
 
     /* mRNA degradation */
-    mr -> () at dm,
-    mt -> () at dm,
-    mm -> () at dm,
-    mp -> () at dm,
-    mq -> () at dm,
+    mr --> () at dm,
+    mt --> () at dm,
+    mm --> () at dm,
+    mp --> () at dm,
+    mq --> () at dm,
 
     /* chloramphenicol */
-    rmr -> zmr at f,
-    rmt -> zmt at f,
-    rmm -> zmm at f,
-    rmp -> zmp at f,
-    rmq -> zmq at f,
+    rmr --> zmr at f,
+    rmt --> zmt at f,
+    rmm --> zmm at f,
+    rmp --> zmp at f,
+    rmq --> zmq at f,
 
-    zmr -> rmr at b,
-    zmt -> rmt at b,
-    zmm -> rmm at b,
-    zmp -> rmp at b,
-    zmq -> rmq at b,
+    zmr --> rmr at b,
+    zmt --> rmt at b,
+    zmm --> rmm at b,
+    zmp --> rmp at b,
+    zmq --> rmq at b,
 
     /* dilution */
-    mr -> () at lam,
-    mt -> () at lam,
-    mm -> () at lam,
-    mp -> () at lam,
-    mq -> () at lam,
-    rmr -> () at lam,
-    rmt -> () at lam,
-    rmm -> () at lam,
-    rmp -> () at lam,
-    rmq -> () at lam,
-    r -> () at lam,
-    et -> () at lam,
-    em -> () at lam,
-    p -> () at lam,
-    q -> () at lam,
-    a -> () at lam,
-    si -> () at lam,
-    zmr -> () at lam,
-    zmt -> () at lam,
-    zmm -> () at lam,
-    zmp -> () at lam,
-    zmq -> () at lam
+    mr --> () at lam,
+    mt --> () at lam,
+    mm --> () at lam,
+    mp --> () at lam,
+    mq --> () at lam,
+    rmr --> () at lam,
+    rmt --> () at lam,
+    rmm --> () at lam,
+    rmp --> () at lam,
+    rmq --> () at lam,
+    r --> () at lam,
+    et --> () at lam,
+    em --> () at lam,
+    p --> () at lam,
+    q --> () at lam,
+    a --> () at lam,
+    si --> () at lam,
+    zmr --> () at lam,
+    zmt --> () at lam,
+    zmm --> () at lam,
+    zmp --> () at lam,
+    zmq --> () at lam
   )
 }
 

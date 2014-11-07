@@ -17,13 +17,76 @@
  */
 package uk.ac.ed.inf.mois.weisse
 
-import uk.ac.ed.inf.mois.{Model, Process}
+import uk.ac.ed.inf.mois.{Model, Process, ProcessGroup}
+import uk.ac.ed.inf.mois.sched.CompositionScheduler
 import uk.ac.ed.inf.mois.{VarCalc, Math}
 import uk.ac.ed.inf.mois.reaction.DeterministicReactionNetwork
 import spire.implicits._
 import uk.ac.ed.inf.mois.implicits._
 
 import org.apache.commons.math3.ode.nonstiff.AdamsMoultonIntegrator
+
+class WeisseRates(
+  val k_cm  : Double,
+  val Kp    : Double,
+  val Kt    : Double,
+  val Km    : Double,
+  val M     : Double,
+  val gmax  : Double,
+  val nr    : Double,
+  val nx    : Double,
+  val cl    : Double,
+  val s0    : Double,
+  val vm    : Double,
+  val vt    : Double
+) extends VarCalc {
+  /* ATP and internal nutrient */
+  val a = Double("a")
+  val si = Double("si")
+
+  /* proteins */
+  val r = Double("r")
+  val p = Double("p")
+  val q = Double("q")
+  val em = Double("em")
+  val et = Double("et")
+
+  /* ribosome-bound mRNA */
+  val rmr = Double("rmr")
+  val rmt = Double("rmt")
+  val rmm = Double("rmm")
+  val rmp = Double("rmp")
+  val rmq = Double("rmq")
+
+  /* ribosome-bound mRNA sequestered by chloramphenicol */
+  val zmr = Double("zmr")
+  val zmt = Double("zmt")
+  val zmm = Double("zmm")
+  val zmp = Double("zmp")
+  val zmq = Double("zmq")
+
+  /* some rates */
+  val Kgamma = Double("Kgamma") nonnegative()
+  val gamma = Double("gamma") nonnegative()
+  val ttrate = Double("ttrate") nonnegative()
+  val lam = Double("lam") nonnegative()
+  val fr = Double("fr") nonnegative()
+  val nucat = Double("nucat") nonnegative()
+  val nurat = Double("nurat") nonnegative()
+  val f = Double("f") nonnegative()
+  val b = Double("b") nonnegative()
+
+  calc(Kgamma) := gmax/Kp
+  calc(gamma) := gmax*a/(Kgamma + a)
+  calc(ttrate) := gamma*(rmq + rmr + rmp + rmt + rmm)
+  calc(lam) := ttrate/M
+  calc(fr) := nr*(r + rmr + rmp + rmt + rmm + rmq + zmr + zmp + zmt + zmm + zmq) /
+    ( nr*(r + rmr + rmp + rmt + rmm + rmq + zmr + zmp + zmt + zmm + zmq) + nx*(p + q + et + em) )
+  calc(nucat) := em*vm*si/(Km + si)
+  calc(nurat) := et*vt*s0/(Kt + s0)
+  calc(f) := cl*k_cm
+  calc(b) := 0.0
+}
 
 class WeisseCell(
   val Kp    : Double,
@@ -64,40 +127,38 @@ class WeisseCell(
       absoluteTolerance, relativeTolerance)
   }
 
-  import MultisetConversion._
-
   /* define variables */
   /* ATP and internal nutrient */
-  val a = Species("a")
-  val si = Species("si")
+  val a = Species("a") nonnegative()
+  val si = Species("si") nonnegative()
 
   /* proteins */
-  val r = Species("r")
-  val et = Species("et")
-  val em = Species("em")
-  val p = Species("p")
-  val q = Species("q")
+  val r = Species("r") nonnegative()
+  val et = Species("et") nonnegative()
+  val em = Species("em") nonnegative()
+  val p = Species("p") nonnegative()
+  val q = Species("q") nonnegative()
 
   /* mRNA */
-  val mr = Species("mr")
-  val mt = Species("mt")
-  val mm = Species("mm")
-  val mp = Species("mp")
-  val mq = Species("mq")
+  val mr = Species("mr") nonnegative()
+  val mt = Species("mt") nonnegative()
+  val mm = Species("mm") nonnegative()
+  val mp = Species("mp") nonnegative()
+  val mq = Species("mq") nonnegative()
 
   /* ribosome-bound mRNA */
-  val rmr = Species("rmr")
-  val rmt = Species("rmt")
-  val rmm = Species("rmm")
-  val rmp = Species("rmp")
-  val rmq = Species("rmq")
+  val rmr = Species("rmr") nonnegative()
+  val rmt = Species("rmt") nonnegative()
+  val rmm = Species("rmm") nonnegative()
+  val rmp = Species("rmp") nonnegative()
+  val rmq = Species("rmq") nonnegative()
 
   /* ribosome-bound mRNA sequestered by chloramphenicol */
-  val zmr = Species("zmr")
-  val zmt = Species("zmt")
-  val zmm = Species("zmm")
-  val zmp = Species("zmp")
-  val zmq = Species("zmq")
+  val zmr = Species("zmr") nonnegative()
+  val zmt = Species("zmt") nonnegative()
+  val zmm = Species("zmm") nonnegative()
+  val zmp = Species("zmp") nonnegative()
+  val zmq = Species("zmq") nonnegative()
 
   /* some rates */
   val Kgamma = Double("Kgamma")
@@ -106,22 +167,14 @@ class WeisseCell(
   val lam = Double("lam")
   val fr = Double("fr")
   val nucat = Double("nucat")
+  val nurat = Double("nurat")
   val f = Double("f")
   val b = Double("b")
 
-  calc(Kgamma) := gmax/Kp
-  calc(gamma) := gmax*a/(Kgamma + a)
-  calc(ttrate) := gamma*(rmq + rmr + rmp + rmt + rmm)
-  calc(lam) := ttrate/M
-  calc(fr) := nr*(r + rmr + rmp + rmt + rmm + rmq + zmr + zmp + zmt + zmm + zmq) /
-    ( nr*(r + rmr + rmp + rmt + rmm + rmq + zmr + zmp + zmt + zmm + zmq) + nx*(p + q + et + em) )
-  calc(nucat) := em*vm*si/(Km + si)
-  calc(f) := cl*k_cm
-  calc(b) := 0.0
 
   reactions(
     /* nutrient import */
-    () --> si `at!` et*vt*s0/(Kt + s0),
+    () --> si `at!` nurat,
 
     /* nutrient metabolism */
     si --> () `at!` nucat,
@@ -232,7 +285,11 @@ class WeisseModel extends Model {
   val kb = 1.0
   val ku = 1.0
 
-  val process = new WeisseCell(
+  val process = new ProcessGroup {
+    scheduler = new CompositionScheduler(0.01)
+  }
+
+  process += new WeisseCell(
       Kp,
       thetar,
       k_cm,
@@ -258,57 +315,14 @@ class WeisseModel extends Model {
       kb,
       ku
   )
-
-  import process._
-
-  // -- Variable constraints --
-
-  /* ATP and internal nutrient */
-  a nonnegative()
-  si nonnegative()
-
-  /* proteins */
-  r nonnegative()
-  et nonnegative()
-  em nonnegative()
-  p nonnegative()
-  q nonnegative()
-
-  /* mRNA */
-  mr nonnegative()
-  mt nonnegative()
-  mm nonnegative()
-  mp nonnegative()
-  mq nonnegative()
-
-  /* ribosome-bound mRNA */
-  rmr nonnegative()
-  rmt nonnegative()
-  rmm nonnegative()
-  rmp nonnegative()
-  rmq nonnegative()
-
-  /* ribosome-bound mRNA sequestered by chloramphenicol */
-  zmr nonnegative()
-  zmt nonnegative()
-  zmm nonnegative()
-  zmp nonnegative()
-  zmq nonnegative()
-
-  /* some rates */
-  Kgamma nonnegative()
-  gamma nonnegative()
-  ttrate nonnegative()
-  lam nonnegative()
-  fr nonnegative()
-  nucat nonnegative()
-  f nonnegative()
-  b nonnegative()
+  process += new WeisseRates(
+    k_cm, Kp, Kt, Km, M, gmax, nr, nx, cl, s0, vm, vt
+  )
 
   // -- Initial values --
 
-  a := 1.0
-  r := 1.0
+  Double("a") default(1.0)
+  Double("r") default(1.0)
 
   // Everything else is just zero
 }

@@ -41,11 +41,11 @@ class WeisseRates(
   val vt    : Double
 ) extends VarCalc {
   /* ATP and internal nutrient */
-  val a = Double("a")
+  val a = Double("a") default(1.0)
   val si = Double("si")
 
   /* proteins */
-  val r = Double("r")
+  val r = Double("r") default(1.0)
   val p = Double("p")
   val q = Double("q")
   val em = Double("em")
@@ -319,7 +319,7 @@ class WeisseModel extends Model {
     k_cm, Kp, Kt, Km, M, gmax, nr, nx, cl, s0, vm, vt
   )
 
-  // -- Initial values --
+  // -- Initial values -- (not communicating downwards - need to write defaults in process proper)
 
   Double("a") default(1.0)
   Double("r") default(1.0)

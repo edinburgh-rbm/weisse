@@ -32,3 +32,5 @@ resolvers += "ucar-unidata-releases" at "https://artifacts.unidata.ucar.edu/cont
 libraryDependencies += "uk.ac.ed.inf" %% "mois" % "1.99.14-SNAPSHOT"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.0" % "test"
+
+libraryDependencies += "xml-apis" % "xml-apis" % "1.4.01"

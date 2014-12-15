@@ -41,11 +41,11 @@ class WeisseRates(
   val vt    : Double
 ) extends VarCalc {
   /* ATP and internal nutrient */
-  val a = Double("a") default(1.0)
+  val a = Double("a")
   val si = Double("si")
 
   /* proteins */
-  val r = Double("r") default(1.0)
+  val r = Double("r")
   val p = Double("p")
   val q = Double("q")
   val em = Double("em")
@@ -286,7 +286,7 @@ class WeisseModel extends Model {
   val ku = 1.0
 
   val process = new ProcessGroup {
-    scheduler = new CompositionScheduler(0.01)
+    scheduler = new CompositionScheduler(1.0)
   }
 
   process += new WeisseCell(

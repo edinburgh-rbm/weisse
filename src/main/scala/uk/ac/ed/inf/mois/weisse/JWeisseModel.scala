@@ -28,11 +28,11 @@ import uk.ac.ed.inf.mois.implicits._
 class JWeisseRates(val k_cm : Double, val Kp : Double, val Kt : Double, val Km : Double, val M : Double, val gmax : Double, val nr : Double, val nx : Double, val cl : Double, val s0 : Double, val vm : Double, val vt : Double
 ) extends VarCalc {
   /* ATP and internal nutrient */
-  val a = Double("a") default(1.0)
+  val a = Double("a")
   val si = Double("si")
 
   /* proteins */
-  val r = Double("r") default(1.0)
+  val r = Double("r")
   val p = Double("p")
   val q = Double("q")
   val em = Double("em")
@@ -121,7 +121,7 @@ class JWeisseModel extends Model {
   process += new JWeisseCellDilution
   process += new JWeisseCellMetabolism(ns)
 
-  // -- Initial values -- (not communicating downwards - need to write defaults in process proper)
+  // -- Initial values -- 
 
   Double("a") default(1.0)
   Double("r") default(1.0)

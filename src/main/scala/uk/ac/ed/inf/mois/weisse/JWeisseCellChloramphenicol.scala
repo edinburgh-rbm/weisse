@@ -20,15 +20,18 @@ package uk.ac.ed.inf.mois.weisse
 import uk.ac.ed.inf.mois.{Model, Process, ProcessGroup}
 import uk.ac.ed.inf.mois.sched.CompositionScheduler
 import uk.ac.ed.inf.mois.{VarCalc, Math}
+import uk.ac.ed.inf.mois.ode.Rosenbrock
 import uk.ac.ed.inf.mois.reaction.DeterministicReactionNetwork
+import spire.math.Jet
 import spire.implicits._
 import uk.ac.ed.inf.mois.implicits._
 
 
 class JWeisseCellChloramphenicol
-    extends DeterministicReactionNetwork
-       with VarCalc
-       with Math {
+    extends DeterministicReactionNetwork[Double, Jet[Double]]
+    with Rosenbrock
+    with VarCalc
+    with Math {
 
   /* define variables */
   /* ribosome-bound mRNA */

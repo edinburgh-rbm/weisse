@@ -20,15 +20,18 @@ package uk.ac.ed.inf.mois.weisse
 import uk.ac.ed.inf.mois.{Model, Process, ProcessGroup}
 import uk.ac.ed.inf.mois.sched.CompositionScheduler
 import uk.ac.ed.inf.mois.{VarCalc, Math}
+import uk.ac.ed.inf.mois.ode.{Apache, Rosenbrock}
 import uk.ac.ed.inf.mois.reaction.DeterministicReactionNetwork
+import spire.math.Jet
 import spire.implicits._
 import uk.ac.ed.inf.mois.implicits._
 
 
 class JWeisseCellTranscription(val thetar: Double, val thetax: Double, val wr : Double, val wq : Double, val we : Double, val wp : Double, val Kq : Double, val nq : Double)
-    extends DeterministicReactionNetwork
-       with VarCalc
-       with Math {
+    extends DeterministicReactionNetwork[Double, Double]
+    with Apache
+    with VarCalc
+    with Math {
 
   /* define variables */
   /* ATP and internal nutrient */

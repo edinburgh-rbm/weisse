@@ -18,13 +18,13 @@
 package uk.ac.ed.inf.mois.weisse
 
 import uk.ac.ed.inf.mois.{Model, Process, ProcessGroup}
+import uk.ac.ed.inf.mois.ode.{Rosenbrock, ODEDebugHandler}
 import uk.ac.ed.inf.mois.sched.CompositionScheduler
 import uk.ac.ed.inf.mois.{VarCalc, Math}
 import uk.ac.ed.inf.mois.reaction.DeterministicReactionNetwork
+import spire.math.Jet
 import spire.implicits._
 import uk.ac.ed.inf.mois.implicits._
-
-import org.apache.commons.math3.ode.nonstiff.AdamsMoultonIntegrator
 
 class WeisseRates(
   val k_cm  : Double,
@@ -113,19 +113,8 @@ class WeisseCell(
   val cl    : Double,
   val kb    : Double,
   val ku    : Double)
-    extends DeterministicReactionNetwork
-       with VarCalc
+    extends DeterministicReactionNetwork[Double, Jet[Double]] with Rosenbrock
        with Math {
-
-  override def integrator = {
-    val nSteps = 4
-    val minStep = 1e-8
-    val maxStep = 100
-    val absoluteTolerance = 1e-10
-    val relativeTolerance = 1e-10
-    new AdamsMoultonIntegrator(nSteps, minStep, maxStep,
-      absoluteTolerance, relativeTolerance)
-  }
 
   /* define variables */
   /* ATP and internal nutrient */
@@ -171,6 +160,8 @@ class WeisseCell(
   val f = Double("f")
   val b = Double("b")
 
+  import spire.math.Jet
+  implicit def jetToDouble(j: Jet[Double]): Double = j.real
 
   reactions(
     /* nutrient import */
@@ -315,6 +306,7 @@ class WeisseModel extends Model {
       kb,
       ku
   )
+
   process += new WeisseRates(
     k_cm, Kp, Kt, Km, M, gmax, nr, nx, cl, s0, vm, vt
   )

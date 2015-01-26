@@ -1,2 +1,3 @@
-uk.ac.ed.inf.mois.weisse.WeisseModel
+uk.ac.ed.inf.mois.weisse.WeisseModelBase
+uk.ac.ed.inf.mois.weisse.WeisseModelSteady
 uk.ac.ed.inf.mois.weisse.JWeisseModel

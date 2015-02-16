@@ -276,11 +276,7 @@ class WeisseModelSteady extends Model {
   val kb = 1.0
   val ku = 1.0
 
-  val process = new ProcessGroup {
-    scheduler = new CompositionScheduler(1.0)
-  }
-
-  process += new WeisseCellSteady(
+  var cell = new WeisseCellSteady(
       Kp,
       thetar,
       k_cm,
@@ -306,6 +302,11 @@ class WeisseModelSteady extends Model {
       kb,
       ku
   )
+
+  val process = new ProcessGroup {
+    scheduler = new CompositionScheduler(1.0)
+  }
+  process += cell
 
   process += new WeisseRatesSteady(
     k_cm, Kp, Kt, Km, M, gmax, nr, nx, cl, s0, vm, vt

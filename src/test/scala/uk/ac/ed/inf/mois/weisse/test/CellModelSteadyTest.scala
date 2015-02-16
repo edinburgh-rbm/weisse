@@ -17,13 +17,15 @@
  */
 package uk.ac.ed.inf.mois.weisse.test
 
+import spire.algebra.Rig
+import spire.implicits._
 import uk.ac.ed.inf.mois.implicits._
 
 import scala.language.reflectiveCalls
 import org.scalatest.{FlatSpec, Matchers}
 import org.scalactic.TolerantNumerics
 
-import uk.ac.ed.inf.mois.{Model, ProcessGroup, State}
+import uk.ac.ed.inf.mois.{Model, ProcessGroup, State, Var}
 import uk.ac.ed.inf.mois.ode.{ODE, Apache}
 
 import uk.ac.ed.inf.mois.weisse._
@@ -44,7 +46,7 @@ class WeisseModelSteadyTest extends FlatSpec with Matchers {
     for (i <- 0.0 until 1.0 by s) {
       model.process.step(i, i+s)
 
-      (em.value * vm / (Km + si.value)) should equal (et.value * vt / (Kt + s0))
+      (model.cell.em * vm / (Km + model.cell.si)) should equal (model.cell.et * vt / (Kt + s0))
     }
   }
 }

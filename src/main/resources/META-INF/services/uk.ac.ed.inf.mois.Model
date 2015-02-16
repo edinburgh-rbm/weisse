@@ -1,3 +1,4 @@
 uk.ac.ed.inf.mois.weisse.WeisseModelBase
 uk.ac.ed.inf.mois.weisse.WeisseModelSteady
 uk.ac.ed.inf.mois.weisse.JWeisseModel
+uk.ac.ed.inf.mois.weisse.IsolatedRepressilatorModel

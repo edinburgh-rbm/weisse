@@ -19,6 +19,8 @@ package uk.ac.ed.inf.mois.weisse
 
 import uk.ac.ed.inf.mois.{Model, Process, ProcessGroup}
 import uk.ac.ed.inf.mois.sched.CompositionScheduler
+import uk.ac.ed.inf.mois.sched.NaiveScheduler
+import uk.ac.ed.inf.mois.sched.SymmetricScheduler
 import uk.ac.ed.inf.mois.{VarCalc, Math}
 import uk.ac.ed.inf.mois.reaction.DeterministicReactionNetwork
 import spire.implicits._
@@ -109,7 +111,7 @@ class JWeisseModel extends Model {
   val ku = 1.0
 
   val process = new ProcessGroup {
-    scheduler = new CompositionScheduler(0.01)
+    scheduler = new CompositionScheduler(0.1)
   }
 
   process += new JWeisseRates(k_cm, Kp, Kt, Km, M, gmax, nr, nx, cl, s0, vm, vt)
@@ -120,11 +122,42 @@ class JWeisseModel extends Model {
   process += new JWeisseCellChloramphenicol
   process += new JWeisseCellDilution
   process += new JWeisseCellMetabolism(ns)
+  process += new JWeisseCellRepressilator(kb, ku, thetax)
 
-  // -- Initial values -- 
+  // -- Initial values --
 
-  Double("a") default(1.0)
-  Double("r") default(1.0)
+  /* ATP and internal nutrient */
+  Double("a") default(43297.502)
+  Double("si") default(31096.192)
 
-  // Everything else is just zero
+  /* proteins */
+  Double("r") default(0.0414)
+  Double("et") default(471.364)
+  Double("em") default(471.364)
+  Double("p") default(471.364)
+  Double("q") default(471.364)
+
+  /* mRNA */
+  Double("mr") default(8514.558)
+  Double("mt") default(49.333)
+  Double("mm") default(49.333)
+  Double("mp") default(21.329)
+  Double("mq") default(8811.960)
+
+  /* ribosome-bound mRNA */
+  Double("rmr") default(348.675)
+  Double("rmt") default(0.0)
+  Double("rmm") default(0.0)
+  Double("rmp") default(0.0)
+  Double("rmq") default(357.898)
+
+  /* ribosome-bound mRNA sequestered by chloramphenicol */
+  Double("zmr") default(0.0)
+  Double("zmt") default(0.0)
+  Double("zmm") default(0.0)
+  Double("zmp") default(0.0)
+  Double("zmq") default(0.0)
+
+  // All rates should be calculated from the above.
+
 }

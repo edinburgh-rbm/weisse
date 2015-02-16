@@ -276,11 +276,7 @@ class WeisseModelBase extends Model {
   val kb = 1.0
   val ku = 1.0
 
-  val process = new ProcessGroup {
-    scheduler = new CompositionScheduler(1.0)
-  }
-
-  process += new WeisseCellBase(
+  var cell = new WeisseCellBase(
       Kp,
       thetar,
       k_cm,
@@ -306,6 +302,11 @@ class WeisseModelBase extends Model {
       kb,
       ku
   )
+
+  val process = new ProcessGroup {
+    scheduler = new CompositionScheduler(1.0)
+  }
+  process += cell
 
   process += new WeisseRatesBase(
     k_cm, Kp, Kt, Km, M, gmax, nr, nx, cl, s0, vm, vt

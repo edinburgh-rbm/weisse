@@ -19,7 +19,6 @@ package uk.ac.ed.inf.mois.weisse
 
 import uk.ac.ed.inf.mois.{Model, Process, ProcessGroup}
 import uk.ac.ed.inf.mois.sched.CompositionScheduler
-import uk.ac.ed.inf.mois.{VarCalc, Math}
 import uk.ac.ed.inf.mois.ode.Rosenbrock
 import uk.ac.ed.inf.mois.reaction.DeterministicReactionNetwork
 import spire.math.Jet
@@ -29,9 +28,7 @@ import uk.ac.ed.inf.mois.implicits._
 
 class JWeisseCellRepressilator(val kb: Double, val ku: Double, val thetax: Double)
     extends DeterministicReactionNetwork[Double, Jet[Double]]
-    with Rosenbrock
-    with VarCalc
-    with Math {
+    with Rosenbrock {
 
   /* define variables */
   /* ATP and internal nutrient */
@@ -67,26 +64,19 @@ class JWeisseCellRepressilator(val kb: Double, val ku: Double, val thetax: Doubl
   val h = Double("h") default(2.0) param()
   val n_g = Double("n_g") default(300.0) param()
 
-  import spire.math.Jet
-  implicit def jetToDouble(j: Jet[Double]): Double = j.real
-
-  val R_g1 = Double("R_g1") param()
-  val R_g2 = Double("R_g2") param()
-  val R_g3 = Double("R_g3") param()
-  calc(R_g1) := (1.0 / (1.0 + (jetToDouble(g3) / K_g) ** h))
-  calc(R_g2) := (1.0 / (1.0 + (jetToDouble(g1) / K_g) ** h))
-  calc(R_g3) := (1.0 / (1.0 + (jetToDouble(g2) / K_g) ** h))
-
-  val w_g1 = Double("w_g1") param()
-  val w_g2 = Double("w_g2") param()
-  val w_g3 = Double("w_g3") param()
-  calc(w_g1) := (w_g * ((a / (thetax + a)) * R_g1))
-  calc(w_g2) := (w_g * ((a / (thetax + a)) * R_g2))
-  calc(w_g3) := (w_g * ((a / (thetax + a)) * R_g3))
-
-  val rttrate = Double("rttrate") param()
-  calc(rttrate) := gamma / n_g
-
+  def w_g1 = {
+    val r_g1 = 1.0 / (1.0 + (g3 / K_g) ** h)
+    w_g * (a / (thetax + a) * r_g1)
+  }
+  def w_g2 = {
+    val r_g2 = 1.0 / (1.0 + (g1 / K_g) ** h)
+    w_g * (a / (thetax + a) * r_g2)
+  }
+  def w_g3 = {
+    val r_g3 = 1.0 / (1.0 + (g2 / K_g) ** h)
+    w_g * (a / (thetax + a) * r_g3)
+  }
+  def rttrate = gamma / n_g
 
   reactions(
 

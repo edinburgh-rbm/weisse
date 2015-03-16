@@ -122,7 +122,8 @@ class JWeisseModel extends Model {
   process += new JWeisseCellChloramphenicol
   process += new JWeisseCellDilution
   process += new JWeisseCellMetabolism(ns)
-  process += new JWeisseCellRepressilator(kb, ku, thetax)
+  //process += new JWeisseCellRepressilator(kb, ku)
+  //process += new JWeisseCellRepressilatorRates(thetax)
 
   // -- Initial values --
 
@@ -131,7 +132,7 @@ class JWeisseModel extends Model {
   Double("si") default(31096.192)
 
   /* proteins */
-  Double("r") default(0.0414)
+  Double("r") default(200.0414)
   Double("et") default(471.364)
   Double("em") default(471.364)
   Double("p") default(471.364)

@@ -10,13 +10,13 @@ import uk.ac.ed.inf.mois.implicits._
 class IsolatedRepressilator
   extends DeterministicReactionNetwork[Double, Double] with Apache with VarCalc {
 
-  val g1 = Species("g1") default(53.637)
-  val g2 = Species("g2") default(1275.475)
-  val g3 = Species("g3") default(1103.547)
+  val g1 = Species("g1")
+  val g2 = Species("g2")
+  val g3 = Species("g3")
 
-  val mg1 = Species("mg1") default(5.477)
-  val mg2 = Species("mg2") default(799.557)
-  val mg3 = Species("mg3") default(79.569)
+  val mg1 = Species("mg1") default(20.0)
+  val mg2 = Species("mg2")
+  val mg3 = Species("mg3")
 
   val lambda_eff = Double("lambda_eff") default(0.022) param()
   val d_g = Double("d_g") default(0.1733) param()
@@ -29,9 +29,9 @@ class IsolatedRepressilator
   val R_g1 = Double("R_g1") param()
   val R_g2 = Double("R_g2") param()
   val R_g3 = Double("R_g3") param()
-  calc(R_g1) := 1.0 / (1.0 + ((g3 / K_g) ** h))
-  calc(R_g2) := 1.0 / (1.0 + ((g1 / K_g) ** h))
-  calc(R_g3) := 1.0 / (1.0 + ((g2 / K_g) ** h))
+  calc(R_g1) := (1.0 / (1.0 + (g3 / K_g) ** h))
+  calc(R_g2) := (1.0 / (1.0 + (g1 / K_g) ** h))
+  calc(R_g3) := (1.0 / (1.0 + (g2 / K_g) ** h))
 
 
   reactions(

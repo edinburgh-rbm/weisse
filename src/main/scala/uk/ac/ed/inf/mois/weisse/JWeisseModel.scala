@@ -122,7 +122,8 @@ class JWeisseModel extends Model {
   process += new JWeisseCellChloramphenicol
   process += new JWeisseCellDilution
   process += new JWeisseCellMetabolism(ns)
-  process += new JWeisseCellRepressilator(kb, ku, thetax)
+  process += new JWeisseCellRepressilator(kb, ku)
+  process += new JWeisseCellRepressilatorRates(thetax)
 
   // -- Initial values --
 

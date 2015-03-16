@@ -26,23 +26,67 @@ import spire.math.Jet
 import spire.implicits._
 import uk.ac.ed.inf.mois.implicits._
 
+class JWeisseCellRepressilatorRates(val thetax: Double)
+    extends VarCalc {
 
-class JWeisseCellRepressilator(val kb: Double, val ku: Double, val thetax: Double)
+  /* define variables */
+  /* ATP and internal nutrient */
+  val a = Double("a")
+
+  /* Repressilator species */
+  val g1 = Double("g1")
+  val g2 = Double("g2")
+  val g3 = Double("g3")
+
+  /* some rates */
+  val gamma = Double("gamma")
+
+  /* Repressilator rates */
+  val w_g = Double("w_g") default(1000.0) param()
+  val K_g = Double("K_g") default(100.0) param()
+  val h = Double("h") default(2.0) param()
+  val n_g = Double("n_g") default(300.0) param()
+
+  val R_g1 = Double("R_g1") param()
+  val R_g2 = Double("R_g2") param()
+  val R_g3 = Double("R_g3") param()
+  calc(R_g1) := 1.0 / (1.0 + ((g3 / K_g) ** h))
+  calc(R_g2) := 1.0 / (1.0 + ((g1 / K_g) ** h))
+  calc(R_g3) := 1.0 / (1.0 + ((g2 / K_g) ** h))
+
+  val w_g1 = Double("w_g1") param()
+  val w_g2 = Double("w_g2") param()
+  val w_g3 = Double("w_g3") param()
+  calc(w_g1) := w_g * ((a / (thetax + a)) * R_g1)
+  calc(w_g2) := w_g * ((a / (thetax + a)) * R_g2)
+  calc(w_g3) := w_g * ((a / (thetax + a)) * R_g3)
+
+  val rttrate = Double("rttrate") param()
+  calc(rttrate) := gamma / n_g
+
+}
+
+
+class JWeisseCellRepressilator(val kb: Double, val ku: Double)
     extends DeterministicReactionNetwork[Double, Jet[Double]]
     with Rosenbrock
     with VarCalc
     with Math {
 
   /* define variables */
-  /* ATP and internal nutrient */
-  val a = Species("a") nonnegative()
-
   /* proteins */
   val r = Species("r") nonnegative()
 
   /* some rates */
-  val gamma = Double("gamma")
   val lam = Double("lam")
+  val d_g = Double("d_g") default(0.1733) param()
+  val d_mg = Double("d_mg") default(0.3466) param()
+
+  val w_g1 = Double("w_g1") param()
+  val w_g2 = Double("w_g2") param()
+  val w_g3 = Double("w_g3") param()
+
+  val rttrate = Double("rttrate") param()
 
 
   /* Repressilator species */
@@ -50,42 +94,13 @@ class JWeisseCellRepressilator(val kb: Double, val ku: Double, val thetax: Doubl
   val g2 = Species("g2")
   val g3 = Species("g3")
 
-  val mg1 = Species("mg1") default(20.0)
+  val mg1 = Species("mg1")
   val mg2 = Species("mg2")
   val mg3 = Species("mg3")
 
   val cg1 = Species("cg1")
-  val cg2 = Species("cg2")
+  val cg2 = Species("cg2") default(200.0)
   val cg3 = Species("cg3")
-
-  /* Repressilator rates */
-
-  val d_g = Double("d_g") default(0.1733) param()
-  val d_mg = Double("d_mg") default(0.3466) param()
-  val w_g = Double("w_g") default(500.0) param()
-  val K_g = Double("K_g") default(100.0) param()
-  val h = Double("h") default(2.0) param()
-  val n_g = Double("n_g") default(300.0) param()
-
-  import spire.math.Jet
-  implicit def jetToDouble(j: Jet[Double]): Double = j.real
-
-  val R_g1 = Double("R_g1") param()
-  val R_g2 = Double("R_g2") param()
-  val R_g3 = Double("R_g3") param()
-  calc(R_g1) := (1.0 / (1.0 + (jetToDouble(g3) / K_g) ** h))
-  calc(R_g2) := (1.0 / (1.0 + (jetToDouble(g1) / K_g) ** h))
-  calc(R_g3) := (1.0 / (1.0 + (jetToDouble(g2) / K_g) ** h))
-
-  val w_g1 = Double("w_g1") param()
-  val w_g2 = Double("w_g2") param()
-  val w_g3 = Double("w_g3") param()
-  calc(w_g1) := (w_g * ((a / (thetax + a)) * R_g1))
-  calc(w_g2) := (w_g * ((a / (thetax + a)) * R_g2))
-  calc(w_g3) := (w_g * ((a / (thetax + a)) * R_g3))
-
-  val rttrate = Double("rttrate") param()
-  calc(rttrate) := gamma / n_g
 
 
   reactions(
